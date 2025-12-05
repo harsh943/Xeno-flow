@@ -11,7 +11,7 @@ A robust, multi-tenant backend service designed to ingest Shopify data (Orders, 
 - **Analytics Dashboard**: Visualizes Revenue, Active Customers, and Sales Trends with Date Filtering.
 - **Authentication**: Simple Email-based login for Tenant Owners.
 
-## 🏗 Architecture
+##  Architecture
 
 ```mermaid
 graph TD
@@ -92,7 +92,7 @@ Then login with `demo@xeno.com`.
 - `POST /api/auth/login`
   - Body: `{ "email": "owner@example.com" }`
 
-## 🧪 Testing
+##  Testing
 
 ### Option 1: Simulated Testing (Local)
 We have included a script to simulate Shopify webhooks without needing a real store.
