@@ -120,7 +120,3 @@ To test with a real Shopify store:
 1.  **Auth**: Implemented a simple "Email -> Tenant" lookup for the assignment. In production, we'd use OAuth (Shopify OAuth or Auth0).
 2.  **Queue**: Webhooks are processed asynchronously using **Redis (BullMQ)** to handle bursts and retries.
 3.  **Aggregations**: "Total Spend" is aggregated via SQL. For massive scale, we might use materialized views or incremental counters.
-
-## Next Steps
-1.  **Testing**: Add Jest unit tests for Ingestion Logic.
-2.  **Monitoring**: Add Prometheus/Grafana for queue metrics.
