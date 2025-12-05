@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const SECRET = process.env.SHOPIFY_API_SECRET;
-const URL = 'http://localhost:3003/webhooks/shopify';
+const URL = process.env.WEBHOOK_URL || 'http://localhost:3003/webhooks/shopify';
 
 if (!SECRET) {
   console.error('Error: SHOPIFY_API_SECRET is missing in .env');
