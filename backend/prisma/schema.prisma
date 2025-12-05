@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id          String   @id @default(uuid())
+  name        String
+  shop_domain String   @unique // e.g., "my-shop.myshopify.com"
+  api_key     String?  // For internal auth if needed
+  owner_email String?  @unique // For dashboard login
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  products  Product[]
+  customers Customer[]
+  orders    Order[]
+  checkouts Checkout[]
+
+  @@map("tenants")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  shopify_id  String   // Shopify's Product ID (BigInt in Shopify, String here for safety)
+  title       String
+  price       Decimal  @default(0.0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenant_id], references: [id])
+
+  @@unique([tenant_id, shopify_id]) // Idempotency & Multi-tenancy
+  @@index([tenant_id])
+  @@map("products")
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  shopify_id  String   // Shopify's Customer ID
+  email       String?
+  first_name  String?
+  last_name   String?
+  total_spend Decimal  @default(0.0) // Aggregated spend
+  orders_count Int     @default(0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  tenant Tenant  @relation(fields: [tenant_id], references: [id])
+  orders Order[]
+
+  @@unique([tenant_id, shopify_id]) // Idempotency
+  @@index([tenant_id])
+  @@map("customers")
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  shopify_id  String   // Shopify's Order ID
+  order_number String?
+  total_price Decimal  @default(0.0)
+  currency    String?
+  customer_id String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenant_id], references: [id])
+  customer Customer @relation(fields: [customer_id], references: [id])
+
+  @@unique([tenant_id, shopify_id]) // Idempotency
+  @@index([tenant_id])
+  @@index([customer_id])
+  @@map("orders")
+}
+
+model Checkout {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  shopify_id  String   // Shopify's Checkout ID
+  total_price Decimal  @default(0.0)
+  currency    String?
+  abandoned_checkout_url String?
+  completed_at DateTime? // If null, it's potentially abandoned
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenant_id], references: [id])
+
+  @@unique([tenant_id, shopify_id])
+  @@index([tenant_id])
+  @@map("checkouts")
+}
