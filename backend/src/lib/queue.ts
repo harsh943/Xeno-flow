@@ -2,10 +2,9 @@ import { Queue, Worker } from 'bullmq';
 import { IngestionService } from '../services/ingestionService';
 
 // Redis connection details
-const connection = {
-  host: 'localhost',
-  port: 6379,
-};
+const connection = process.env.REDIS_URL 
+  ? { url: process.env.REDIS_URL }
+  : { host: 'localhost', port: 6379 };
 
 export const webhookQueue = new Queue('webhook-queue', { connection });
 
