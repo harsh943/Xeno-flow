@@ -13,7 +13,6 @@ export class WebhookController {
       if (!hmac || !topic || !shop) {
         return res.status(400).send('Missing headers');
       }
-
       const generatedHash = crypto
         .createHmac('sha256', process.env.SHOPIFY_API_SECRET!)
         .update(req.rawBody!) 
