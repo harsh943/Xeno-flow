@@ -69,10 +69,9 @@ npm run dev
 ```
 
 ### 4. Seed Data (Optional)
-You can manually insert a tenant into the database to log in:
-```sql
-INSERT INTO tenants (id, name, shop_domain, owner_email, updated_at) 
-VALUES (gen_random_uuid(), 'Demo Store', 'demo.myshopify.com', 'demo@xeno.com', NOW());
+To log in immediately, seed the database with a test tenant ("Xeno Demo Store") and dummy customers/orders:
+```bash
+npx prisma db seed
 ```
 Then login with `demo@xeno.com`.
 
