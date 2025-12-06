@@ -1,7 +1,6 @@
 import { Queue, Worker } from 'bullmq';
 import { IngestionService } from '../services/ingestionService';
 
-// Redis connection details
 const connection = process.env.REDIS_URL 
   ? { url: process.env.REDIS_URL }
   : { host: 'localhost', port: 6379 };
@@ -27,7 +26,7 @@ export const initWorker = () => {
         }
       } catch (error) {
         console.error(`Failed to process job ${job.id}:`, error);
-        throw error; // Retry job
+        throw error;
       }
     },
     { connection }

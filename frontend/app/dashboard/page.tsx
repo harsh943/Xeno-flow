@@ -130,7 +130,6 @@ export default function Dashboard() {
 
       {stats && (
         <div className="space-y-8">
-          {/* Key Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <MetricCard
               title="Total Revenue"
@@ -148,7 +147,7 @@ export default function Dashboard() {
               title="Avg. Order Value"
               value={
                 stats.activeCustomers > 0
-                  ? `$${(parseFloat(stats.totalRevenue) / stats.activeCustomers).toFixed(2)}` // Rough approx
+                  ? `$${(parseFloat(stats.totalRevenue) / stats.activeCustomers).toFixed(2)}`
                   : "$0.00"
               }
               icon={<TrendingUp className="w-6 h-6 text-purple-400" />}
@@ -156,7 +155,6 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* Sales Chart */}
           <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
             <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-blue-400" />
@@ -178,7 +176,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Top Customers Table */}
           <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
             <div className="p-6 border-b border-gray-700 flex items-center gap-2">
               <Activity className="w-5 h-5 text-yellow-400" />

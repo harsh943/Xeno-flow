@@ -14,13 +14,6 @@ export class WebhookController {
         return res.status(400).send('Missing headers');
       }
 
-      // 1. Verify HMAC
-      // Note: In a real Express app, we need the raw body. 
-      // We'll assume body-parser is configured to verify or we access rawBody.
-      // For this snippet, we'll assume req.body is already parsed JSON, 
-      // which makes HMAC verification tricky without the raw buffer.
-      // We will add a note or assume a rawBody middleware is used.
-      
       const generatedHash = crypto
         .createHmac('sha256', process.env.SHOPIFY_API_SECRET!)
         .update(req.rawBody!) 
@@ -30,7 +23,6 @@ export class WebhookController {
         return res.status(401).send('Invalid HMAC');
       }
 
-      // 2. Resolve Tenant (Middleware already did this, but let's double check)
       const tenant = req.tenant;
       if (!tenant) {
         return res.status(401).send('Tenant not found');
@@ -38,7 +30,6 @@ export class WebhookController {
 
       console.log(`Received webhook ${topic} for shop ${shop}`);
 
-      // 3. Process Webhook (Async via Redis)
       await webhookQueue.add(topic, {
         topic,
         payload: req.body,

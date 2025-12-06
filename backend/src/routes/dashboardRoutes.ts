@@ -20,7 +20,6 @@ router.get('/stats', async (req: Request, res: Response) => {
       };
     }
 
-    // 1. Total Revenue
     const revenueAgg = await prisma.order.aggregate({
       where: { 
         tenant_id: tenantId,
@@ -29,10 +28,6 @@ router.get('/stats', async (req: Request, res: Response) => {
       _sum: { total_price: true },
     });
 
-    // 2. Active Customers (e.g., > 0 orders)
-    // Note: Active customers usually means "placed an order in this period"
-    // But for simplicity we'll keep "total active customers" or filter by order date if needed.
-    // Let's filter customers who placed orders in this range.
     const activeCustomersCount = await prisma.order.groupBy({
       by: ['customer_id'],
       where: {
@@ -41,13 +36,6 @@ router.get('/stats', async (req: Request, res: Response) => {
       },
     }).then((groups: string | any[]) => groups.length);
 
-    // 3. Top Customers by Spend (in this period)
-    // Prisma doesn't support easy "sum of relations with filter" in findMany.
-    // We'll fetch orders and aggregate manually or use raw query.
-    // For simplicity/performance, let's stick to global top customers for now, 
-    // OR if date filter is present, we might need a raw query.
-    // Let's keep Top Customers global for now to avoid complexity, 
-    // but we can add a note.
     const topCustomers = await prisma.customer.findMany({
       where: { tenant_id: tenantId },
       orderBy: { total_spend: 'desc' },
@@ -62,13 +50,6 @@ router.get('/stats', async (req: Request, res: Response) => {
       },
     });
 
-    // 4. Sales Over Time (Chart Data)
-    // We need to group orders by day.
-    // Prisma doesn't have "date_trunc" built-in easily without raw query.
-    // We'll fetch orders and group in JS (fine for small scale) or use raw query.
-    // Let's use raw query for "Engineering Fluency".
-    
-    // Ensure dates are safe
     const start = startDate ? new Date(startDate as string) : new Date(0);
     const end = endDate ? new Date(endDate as string) : new Date();
 
@@ -84,7 +65,6 @@ router.get('/stats', async (req: Request, res: Response) => {
       ORDER BY DATE(created_at) ASC
     `;
 
-    // Serialize BigInt/Decimal for JSON
     const serializedSales = (salesOverTime as any[]).map((item: any) => ({
       date: item.date.toISOString().split('T')[0],
       sales: Number(item.sales)

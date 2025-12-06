@@ -19,8 +19,6 @@ router.post('/login', async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Invalid email or tenant not found' });
     }
 
-    // In a real app, we would issue a JWT here.
-    // For this assignment, we return the tenant ID to be stored in client.
     res.json({ tenantId: tenant.id, name: tenant.name });
   } catch (error) {
     console.error('Login error:', error);

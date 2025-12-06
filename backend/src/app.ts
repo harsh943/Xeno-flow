@@ -9,7 +9,6 @@ const app = express();
 
 app.use(cors());
 
-// Middleware to save raw body for HMAC verification
 app.use(express.json({
   verify: (req: any, res, buf) => {
     req.rawBody = buf;
