@@ -72,9 +72,9 @@ async function sendWebhooks() {
           'x-shopify-hmac-sha256': hmac
         }
       });
-      console.log(`✅ Success: ${res.status} - ${order.name} processed`);
+      console.log(` Success: ${res.status} - ${order.name} processed`);
     } catch (err: any) {
-      console.error(`❌ Error sending ${order.name}:`, err.response ? err.response.data : err.message);
+      console.error(` Error sending ${order.name}:`, err.response ? err.response.data : err.message);
     }
   }
 }
